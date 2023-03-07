@@ -1,7 +1,7 @@
 export interface Song {
-  lyrics: string[5];
-}
-
-export interface BeatForBeat {
-  [key: string]: Song;
+  title: string,
+  artist: string,
+  lyrics: string[],
+  reds: number[],
+  openeds: boolean[],
 }

@@ -1,24 +1,40 @@
 <script lang="ts">
-	import type { BeatForBeat } from './Song';
-	import _songs from './lyrics.json';
 	import Game from './Game.svelte';
-
-	const __songs: any = _songs; // Ugly type hack
-	const songs: BeatForBeat = __songs;
-
-	const keys = Object.keys(songs);
-	const songName = keys[0];
-	let opened = [false, false, false, false, false];
-	const reds = [false, false, true, true, false];
-	const finished = false;
+	import { getBoard, nextBoard, openBoard, prevBoard } from './gameController';
 
 	function handleOpenBoard(event: CustomEvent<{ idx: number }>) {
 		const idx = event.detail.idx;
-		opened[idx] = true;
-		opened = opened;
+		openBoard(idx);
+		song = getBoard();
 	}
+
+	function handlePrevSong() {
+		prevBoard();
+		song = getBoard();
+	}
+
+	function handleNextSong() {
+		nextBoard();
+		song = getBoard();
+	}
+
+	let song = getBoard();
 </script>
 
-<h1 class="my-5 text-center text-8xl font-bold">Beat For Beat</h1>
+<div class="h-screen">
+	<h1 class="py-5 text-center text-8xl font-bold">Beat For Beat</h1>
 
-<Game song={songs[songName]} {songName} {opened} {finished} {reds} on:open={handleOpenBoard} />
+	<div class="flex flex-col place-content-center">
+		{#if song}
+			<Game {song} songTitle={song.title} on:open={handleOpenBoard} />
+		{:else}
+			No Game
+		{/if}
+	</div>
+
+	<div id="controls" class="absolute bottom-0 flex w-full place-content-center p-6">
+		<button on:click={handlePrevSong}>Previous song</button>
+		<span class="px-2">|</span>
+		<button on:click={handleNextSong}>Next song</button>
+	</div>
+</div>
